@@ -12,7 +12,7 @@ os.makedirs("audio_output", exist_ok=True)
 print("Loading emotion model...")
 emotion_classifier = pipeline(
     "text-classification",
-    model="j-hartmann/emotion-english-distilroberta-base",
+    model="SamLowe/roberta-base-go_emotions",
     top_k=1
 )
 print("Model loaded!")
@@ -23,10 +23,13 @@ EMOTION_TO_SENTIMENT = {
     "joy":            {"sentiment": "positive", "label": "the user is happy"},
     "surprise":       {"sentiment": "positive", "label": "the user is surprised"},
     "optimism":       {"sentiment": "positive", "label": "the user is optimistic"},
-    "love":           {"sentiment": "positive", "label": "the user is loving the product"},
+    "love":           {"sentiment": "positive", "label": "loving"},
     "excitement":     {"sentiment": "positive", "label": "the user is excited"},
     "gratitude":      {"sentiment": "positive", "label": "the user is grateful"},
+    "admiration":     {"sentiment": "positive", "label": "the user admires"},
     "amusement":      {"sentiment": "positive", "label": "the user is amused"},
+    "approval":       {"sentiment": "positive", "label": "approving"},
+    "caring":         {"sentiment": "positive", "label": "caring"},
     "desire":         {"sentiment": "positive", "label": "desiring"},
     "pride":          {"sentiment": "positive", "label": "the user is proud"},
     "relief":         {"sentiment": "positive", "label": "the user is relieved"},
@@ -38,7 +41,7 @@ EMOTION_TO_SENTIMENT = {
     # Negative
     "fear":           {"sentiment": "negative", "label": "the user is fearful"},
     "sadness":        {"sentiment": "negative", "label": "The user is sad"},
-    "anger":          {"sentiment": "negative", "label": "the use is angry"},
+    "anger":          {"sentiment": "negative", "label": "the user is angry"},
     "disgust":        {"sentiment": "negative", "label": "the user is disgusted"},
     "disappointment": {"sentiment": "negative", "label": "the user is disappointed"},
     "disapproval":    {"sentiment": "negative", "label": "the user is disapproving"},

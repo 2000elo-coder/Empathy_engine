@@ -265,7 +265,7 @@
         badge.className = `emotion-badge ${data.sentiment}`;
 
         // Result label shows "emotion - label" e.g. "grief - grieving"
-        document.getElementById('resultLabel').textContent = `🎭 ${data.result}`;
+        document.getElementById('resultLabel').textContent = ` ${data.result}`;
 
         // Stats
         document.getElementById('statEmotion').textContent = data.emotion;
@@ -283,7 +283,7 @@
         result.style.display = 'block';
 
       } catch (e) {
-        error.textContent = `❌ Error: ${e.message}`;
+        error.textContent = ` Error: ${e.message}`;
         error.style.display = 'block';
       } finally {
         btn.disabled = false;

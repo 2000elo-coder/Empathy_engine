@@ -4,13 +4,40 @@ An AI-powered service that detects emotion in text and synthesizes expressive sp
 
 ---
 
+## Features
+
+- 🧠 **Granular Emotion Detection** — Classifies text into 28 distinct emotions using a pre-trained transformer model, far beyond basic positive/negative/neutral
+- 🎭 **3-Sentiment Grouping** — Maps all 28 emotions into positive, neutral, or negative for clean voice modulation
+- 📊 **Intensity Scaling** — Confidence score proportionally scales vocal modulation, so a strongly detected emotion sounds more expressive than a weak one
+- 🔊 **Dynamic Voice Modulation** — Adjusts speech rate and volume based on detected sentiment
+- 🌐 **Web Interface** — Clean dark-themed UI with preset buttons, emotion badge, stats display, and embedded audio player
+- ⚡ **REST API** — FastAPI-powered endpoint for programmatic access with auto-generated docs at `/docs`
+- 💾 **Offline TTS** — Uses pyttsx3 for local speech synthesis, no internet or API key required
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Web Framework** | FastAPI | REST API + serving web UI |
+| **ASGI Server** | Uvicorn | Running the FastAPI app |
+| **Emotion Detection** | Hugging Face Transformers | Pre-trained emotion classification |
+| **ML Model** | `j-hartmann/emotion-english-distilroberta-base` | Classifies text into 7 emotions |
+| **Text-to-Speech** | pyttsx3 | Offline speech synthesis |
+| **Data Validation** | Pydantic | Request/response schema validation |
+| **Frontend** | HTML + CSS + Vanilla JS | Web UI |
+| **Language** | Python 3.10+ | Primary language |
+
+---
+
 ## How It Works
 
 ```
 Text Input → Emotion Detection → Sentiment Mapping → Intensity Scaling → pyttsx3 TTS → Audio Output
 ```
 
-1. Text is classified using `j-hartmann/emotion-english-distilroberta-base` 
+1. Text is classified using `j-hartmann/emotion-english-distilroberta-base` (7 emotions)
 2. Raw emotion is mapped to one of 3 sentiments: **positive, neutral, negative**
 3. Confidence score scales the intensity of voice modulation
 4. `pyttsx3` generates speech with sentiment-matched rate and volume
@@ -47,7 +74,7 @@ http://localhost:8000
 
 ---
 
-## FastAPI Endpoints
+## API Endpoints
 
 | Method | Route | Description |
 |--------|-------|-------------|
@@ -91,7 +118,10 @@ http://localhost:8000
 | love | loving |
 | excitement | excited |
 | gratitude | grateful |
+| admiration | admiring |
 | amusement | amused |
+| approval | approving |
+| caring | caring |
 | desire | desiring |
 | pride | proud |
 | relief | relieved |

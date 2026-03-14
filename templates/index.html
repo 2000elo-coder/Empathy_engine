@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Empathy Engine 🎙️</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f1a;
+      color: #e0e0f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      background: linear-gradient(90deg, #a78bfa, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-bottom: 36px;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: #1a1a2e;
+      border: 1px solid #2e2e4e;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 680px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    textarea {
+      width: 100%;
+      height: 130px;
+      background: #0f0f1a;
+      border: 1px solid #3a3a5c;
+      border-radius: 10px;
+      color: #e0e0f0;
+      font-size: 1rem;
+      padding: 14px;
+      resize: vertical;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    textarea:focus { border-color: #a78bfa; }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .preset-btn {
+      background: #2a2a3e;
+      border: 1px solid #3a3a5c;
+      color: #ccc;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover { background: #a78bfa; color: white; border-color: #a78bfa; }
+
+    button#analyzeBtn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      background: linear-gradient(90deg, #a78bfa, #60a5fa);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button#analyzeBtn:hover { opacity: 0.88; }
+    button#analyzeBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .result {
+      margin-top: 28px;
+      display: none;
+    }
+
+    .emotion-badge {
+      display: inline-block;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      text-transform: capitalize;
+    }
+
+    .stat-label { font-size: 0.75rem; color: #888; margin-bottom: 4px; }
+    .stat-value { font-size: 1.3rem; font-weight: 700; color: #a78bfa; }
+
+    audio {
+      width: 100%;
+      margin-top: 4px;
+      border-radius: 8px;
+    }
+
+    .error {
+      color: #f87171;
+      background: #2a1a1a;
+      border: 1px solid #f87171;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .loading { text-align: center; color: #888; margin-top: 16px; display: none; }
+
+    /* Sentiment colors */
+    .positive { background: #78350f; color: #fde68a; }
+    .negative { background: #450a0a; color: #fca5a5; }
+    .neutral  { background: #1f2937; color: #d1d5db; }
+
+    .result-label {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #a78bfa;
+      margin-bottom: 16px;
+      letter-spacing: 0.5px;
+      text-transform: capitalize;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎙️ Empathy Engine</h1>
+  <p class="subtitle">AI-powered emotionally expressive speech synthesis</p>
+
+  <div class="card">
+    <textarea id="textInput" placeholder="Type or paste any text here..."></textarea>
+
+    <div class="presets">
+      <span style="font-size:0.8rem;color:#666;align-self:center;">Try:</span>
+      <button class="preset-btn" onclick="setPreset('joy')">😄 Joy</button>
+      <button class="preset-btn" onclick="setPreset('love')">❤️ Love</button>
+      <button class="preset-btn" onclick="setPreset('excitement')">🤩 Excitement</button>
+      <button class="preset-btn" onclick="setPreset('pride')">🏆 Pride</button>
+      <button class="preset-btn" onclick="setPreset('gratitude')">🙏 Gratitude</button>
+      <button class="preset-btn" onclick="setPreset('curiosity')">🤔 Curiosity</button>
+      <button class="preset-btn" onclick="setPreset('confusion')">😕 Confusion</button>
+      <button class="preset-btn" onclick="setPreset('neutral')">😐 Neutral</button>
+      <button class="preset-btn" onclick="setPreset('anger')">😠 Anger</button>
+      <button class="preset-btn" onclick="setPreset('grief')">😢 Grief</button>
+      <button class="preset-btn" onclick="setPreset('nervousness')">😰 Nervousness</button>
+      <button class="preset-btn" onclick="setPreset('remorse')">😔 Remorse</button>
+    </div>
+
+    <button id="analyzeBtn" onclick="analyze()">🎙️ Generate Emotional Speech</button>
+
+    <div class="loading" id="loading">⏳ Detecting emotion & generating speech...</div>
+    <div class="error" id="error"></div>
+
+    <div class="result" id="result">
+      <div class="emotion-badge" id="emotionBadge"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Emotion</div>
+          <div class="stat-value" id="statEmotion">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Sentiment</div>
+          <div class="stat-value" id="statSentiment">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Confidence</div>
+          <div class="stat-value" id="statConf">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Speech Rate</div>
+          <div class="stat-value" id="statRate">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Volume</div>
+          <div class="stat-value" id="statVol">—</div>
+        </div>
+      </div>
+      <audio id="audioPlayer" controls></audio>
+    </div>
+  </div>
+
+  <script>
+    const PRESETS = {
+      joy:         "I just got promoted! This is the best day of my life!",
+      love:        "I love spending time with my family, they mean everything to me.",
+      excitement:  "We are launching our product tomorrow, I can't wait!",
+      pride:       "My son graduated top of his class today, I couldn't be more proud.",
+      gratitude:   "Thank you so much for everything you have done for me, I truly appreciate it.",
+      curiosity:   "I wonder how black holes actually form and what happens inside them.",
+      confusion:   "I don't understand what you are trying to say, can you explain again?",
+      neutral:     "The meeting is scheduled for Tuesday at 10 AM in the conference room.",
+      anger:       "I have been waiting for three hours and nobody has helped me. This is unacceptable!",
+      grief:       "I lost my best friend last week. I don't know how to move on.",
+      nervousness: "I have a big presentation in front of 500 people tomorrow and I'm terrified.",
+      remorse:     "I regret what I said. I should have never spoken to you that way, I'm truly sorry.",
+    };
+
+    function setPreset(emotion) {
+      document.getElementById('textInput').value = PRESETS[emotion];
+    }
+
+    async function analyze() {
+      const text = document.getElementById('textInput').value.trim();
+      if (!text) return;
+
+      const btn = document.getElementById('analyzeBtn');
+      const loading = document.getElementById('loading');
+      const error = document.getElementById('error');
+      const result = document.getElementById('result');
+
+      btn.disabled = true;
+      loading.style.display = 'block';
+      error.style.display = 'none';
+      result.style.display = 'none';
+
+      try {
+        const res = await fetch('/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Something went wrong');
+        }
+
+        const data = await res.json();
+
+        // Badge shows sentiment (positive / negative / neutral)
+        const badge = document.getElementById('emotionBadge');
+        badge.textContent = `${emojiFor(data.sentiment)} ${data.sentiment}`;
+        badge.className = `emotion-badge ${data.sentiment}`;
+
+        // Result label shows "emotion - label" e.g. "grief - grieving"
+        document.getElementById('resultLabel').textContent = `🎭 ${data.result}`;
+
+        // Stats
+        document.getElementById('statEmotion').textContent = data.emotion;
+        document.getElementById('statSentiment').textContent = data.sentiment;
+        document.getElementById('statConf').textContent = `${(data.confidence * 100).toFixed(0)}%`;
+        document.getElementById('statRate').textContent = `${data.rate} wpm`;
+        document.getElementById('statVol').textContent = `${(data.volume * 100).toFixed(0)}%`;
+
+        // Audio
+        const filename = data.audio_file.split('/').pop();
+        const audio = document.getElementById('audioPlayer');
+        audio.src = `/audio/${filename}`;
+        audio.load();
+
+        result.style.display = 'block';
+
+      } catch (e) {
+        error.textContent = `❌ Error: ${e.message}`;
+        error.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        loading.style.display = 'none';
+      }
+    }
+
+    function emojiFor(sentiment) {
+      const map = { positive: '😄', negative: '😠', neutral: '😐' };
+      return map[sentiment] || '🎭';
+    }
+  </script>
+
+</body>
+</html>

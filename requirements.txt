@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+pyttsx3
+transformers
+torch
+pydantic
+python-multipart

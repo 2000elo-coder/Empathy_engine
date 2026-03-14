@@ -37,7 +37,7 @@ An AI-powered service that detects emotion in text and synthesizes expressive sp
 Text Input → Emotion Detection → Sentiment Mapping → Intensity Scaling → pyttsx3 TTS → Audio Output
 ```
 
-1. Text is classified using `j-hartmann/emotion-english-distilroberta-base` (28 emotions)
+1. Text is classified using `SamLowe/roberta-base-go_emotions` (28 emotions)
 2. Raw emotion is mapped to one of 3 sentiments: **positive, neutral, negative**
 3. Confidence score scales the intensity of voice modulation
 4. `pyttsx3` generates speech with sentiment-matched rate and volume
@@ -55,7 +55,7 @@ pip install -r requirements.txt
 ### 2. Download the Transformer Model
 On the **first run**, the app will automatically download the emotion classification model from HuggingFace:
 - **Model:** `SamLowe/roberta-base-go_emotions`
-- **Size:** ~329MB
+- **Size:** ~500MB
 - **Location:** cached at `C:\Users\<you>\.cache\huggingface\hub\` (Windows) or `~/.cache/huggingface/hub/` (Mac/Linux)
 - **One-time only** — subsequent runs will load from cache instantly
 
@@ -70,7 +70,7 @@ uvicorn main:app --reload
 ```
 http://localhost:8000
 ```
-> **Note:** On first run, wait for the model to finish downloading (~329MB). On subsequent runs, wait for `Model loaded!` and `Application startup complete` in the terminal before opening the browser.
+> **Note:** On first run, wait for the model to finish downloading (~500MB). On subsequent runs, wait for `Model loaded!` and `Application startup complete` in the terminal before opening the browser.
 
 ---
 
